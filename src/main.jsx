@@ -27,15 +27,26 @@ const router = createBrowserRouter([
         element: <Register />,
       },
       {
-        path: 'signup',
-        element: <Signup/>
-      }
+        path: "signup",
+        element: <Signup />,
+      },
     ],
   },
 ]);
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <ToastContainer/>
+    <ToastContainer
+      position="top-center"
+      autoClose={2000}
+      hideProgressBar={false}
+      newestOnTop={false}
+      closeOnClick
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+      theme="light"
+    />
     <RouterProvider router={router} />
   </StrictMode>
 );
