@@ -31,10 +31,9 @@ const Signup = () => {
       return;
     }
 
-    
     if (!terms) {
       toast.warning("Accepct terms and constitions to signup");
-      setErrorMessage('Please Accepct terms and conditions')
+      setErrorMessage("Please Accepct terms and conditions");
       // console.log('Click checkbox to continue');
       return;
     }
@@ -94,7 +93,7 @@ const Signup = () => {
             onClick={handleShowPassword}
             className="absolute right-4 top-14 "
           >
-            {showPassword ? <FaRegEye /> : <FaRegEyeSlash />}
+            {!showPassword ? <FaRegEye /> : <FaRegEyeSlash />}
           </button>
           <label className="label">
             <a href="#" className="label-text-alt link link-hover">
