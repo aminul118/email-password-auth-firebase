@@ -1,14 +1,20 @@
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+  sendPasswordResetEmail,
+} from "firebase/auth";
 import auth from "../../firebase.init";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const Signup = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [sucessfull, setSucessfull] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const emailRef = useRef();
   const handleShowPassword = (e) => {
     e.preventDefault(); // Prevent form submission
 
@@ -20,6 +26,7 @@ const Signup = () => {
     const email = e.target.email.value;
     const password = e.target.password.value;
     const terms = e.target.terms.checked;
+
     console.log(email, password, terms);
     // console.log(typeof password);
     // console.log(terms);
@@ -49,15 +56,41 @@ const Signup = () => {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         console.log(userCredential.user);
-        setSucessfull("Signup sucessfully complected");
-        setErrorMessage("");
-        toast.success("Signup sucessfully complected");
+
+        if (!userCredential.user.emailVerified) {
+          setErrorMessage("Verify Your Email");
+          toast.warn("Verify Your Email");
+        } else {
+          setSucessfull("Signup sucessfully complected");
+          toast.success("Signup sucessfully complected");
+          setErrorMessage("");
+        }
+
+        // Send Verification email to check valid Email addresh
+        sendEmailVerification(auth.currentUser).then(() => {
+          // Email verification sent!
+          // ...
+        });
       })
       .catch((error) => {
         console.log("ERROR", error);
         // const errorMessage = error.message;
         setErrorMessage(errorMessage);
         setSucessfull("");
+      });
+  };
+  const handleForgetPassword = () => {
+    console.log("Password Reset", emailRef.current.value);
+    const email = emailRef.current.value;
+    sendPasswordResetEmail(auth, email)
+      .then(() => {
+        // Password reset email sent!
+        // ..
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+       console.log(errorMessage,errorCode);
       });
   };
 
@@ -72,6 +105,7 @@ const Signup = () => {
           <input
             type="email"
             name="email"
+            ref={emailRef}
             placeholder="email"
             className="input input-bordered"
             required
@@ -95,7 +129,7 @@ const Signup = () => {
           >
             {!showPassword ? <FaRegEye /> : <FaRegEyeSlash />}
           </button>
-          <label className="label">
+          <label onClick={handleForgetPassword} className="label">
             <a href="#" className="label-text-alt link link-hover">
               Forgot password?
             </a>
@@ -115,6 +149,12 @@ const Signup = () => {
           <button className="btn btn-primary">Signup</button>
         </div>
       </form>
+      <p className="py-2">
+        Alldeady have an account? please
+        <Link to={`/login`} className="text-blue-600 hover:underline ml-2">
+          Login
+        </Link>
+      </p>
       {errorMessage ? (
         <p className="text-red-600 py-4 text-center">{errorMessage}</p>
       ) : (

@@ -3,6 +3,7 @@ import auth from "../../firebase.init";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { FaEye, FaRegEyeSlash } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const Login = () => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -87,6 +88,12 @@ const Login = () => {
               <button className="btn btn-primary">Login</button>
             </div>
           </form>
+          <p className="py-2">
+            New to this website? please
+            <Link to={`/signup`} className="text-blue-600 hover:underline ml-2">
+              signup
+            </Link>
+          </p>
           {errorMessage ? (
             <p className="text-center text-red-700">{errorMessage}</p>
           ) : (
